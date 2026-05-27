@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { agronomes, agronomeRegions } from "../../data/platformData.js";
 import { apiGet } from "../../services/platformApi.js";
+import MapLibreView from "../../components/ui/MapLibreView";
+import BottomSheet from "../../components/ui/BottomSheet";
+import { useGeolocationTracker } from "../../hooks/useGeolocationTracker";
 
 const initialContactForm = {
   senderName: "Utilisateur KA MOLEMA",
@@ -23,6 +26,9 @@ export default function AgronomesPage() {
   const [contactForm, setContactForm] = useState(initialContactForm);
   const [feedback, setFeedback] = useState(null);
   const [sending, setSending] = useState(false);
+  const [mapSelectedAgronome, setMapSelectedAgronome] = useState(null);
+
+  const geoTracker = useGeolocationTracker();
 
   useEffect(() => {
     apiGet("/api/agronomes", agronomes).then(setAgronomeList);
@@ -118,6 +124,30 @@ export default function AgronomesPage() {
           </label>
         </div>
       </div>
+
+      {geoTracker.isTracking && (
+        <p style={{ marginTop: '0.5rem', marginBottom: '1rem', color: '#2e7d32' }}>
+          <i className="ti ti-map-pin"></i> Signal GPS de l'agronome activé et partagé en temps réel
+        </p>
+      )}
+
+      <MapLibreView
+        markers={filteredAgronomes}
+        userPosition={geoTracker.position}
+        onMarkerClick={(agronome) => setMapSelectedAgronome(agronome)}
+        selectedMarkerId={mapSelectedAgronome?.id}
+        onMapClick={() => setMapSelectedAgronome(null)}
+      />
+
+      <BottomSheet
+        isOpen={Boolean(mapSelectedAgronome)}
+        data={mapSelectedAgronome}
+        onClose={() => setMapSelectedAgronome(null)}
+        onContact={(agronome, mode) => {
+          setMapSelectedAgronome(null);
+          openContact(agronome, mode);
+        }}
+      />
 
       <div className="cards-grid">
         {filteredAgronomes.map((agronome) => (

@@ -1,0 +1,197 @@
+/* =========================================================
+   AgroPlatform — Design Tokens
+   Usage : importer dans main.tsx -> import './styles/theme.css'
+   ========================================================= */
+
+/* ===== LIGHT THEME (défaut) ===== */
+:root {
+  /* --- Couleurs principales --- */
+  --agro-green-dark:     #2d6a2d;
+  --agro-green-medium:   #3d8b3d;
+  --agro-green-light:    #7aba4c;
+  --agro-yellow:         #f5c842;
+  --agro-yellow-soft:    #fef3c7;
+  --agro-brown:          #8b5e3c;
+  --agro-brown-soft:     #f3e8df;
+
+  /* --- Backgrounds --- */
+  --agro-bg-page:        #fafaf7;
+  --agro-bg-surface:     #f0f4ec;
+  --agro-bg-card:        #ffffff;
+  --agro-bg-nav:         #2d6a2d;
+  --agro-bg-input:       #ffffff;
+
+  /* --- Textes --- */
+  --agro-text-primary:   #1e2318;
+  --agro-text-secondary: #4a5240;
+  --agro-text-muted:     #7a8a6a;
+  --agro-text-on-dark:   #ffffff;
+  --agro-text-on-yellow: #2d6a2d;
+
+  /* --- Bordures --- */
+  --agro-border:         rgba(45, 106, 45, 0.15);
+  --agro-border-strong:  rgba(45, 106, 45, 0.30);
+
+  /* --- États sémantiques --- */
+  --agro-success-bg:     #dcf3c8;
+  --agro-success-text:   #2d6a2d;
+  --agro-warning-bg:     #fef3c7;
+  --agro-warning-text:   #854f0b;
+  --agro-danger-bg:      #fee2e2;
+  --agro-danger-text:    #991b1b;
+  --agro-info-bg:        #e0f0ff;
+  --agro-info-text:      #1a5fa5;
+
+  /* --- Slots disponibilité --- */
+  --agro-slot-free-bg:      #f0faf0;
+  --agro-slot-free-border:  #7aba4c;
+  --agro-slot-free-text:    #2d6a2d;
+  --agro-slot-taken-bg:     #f3f4f6;
+  --agro-slot-taken-text:   #9ca3af;
+  --agro-slot-selected-bg:  #2d6a2d;
+  --agro-slot-selected-text:#ffffff;
+
+  /* --- Chat --- */
+  --agro-chat-out-bg:    #2d6a2d;
+  --agro-chat-out-text:  #ffffff;
+  --agro-chat-in-bg:     #f0f4ec;
+  --agro-chat-in-text:   #1e2318;
+  --agro-chat-in-border: rgba(45, 106, 45, 0.15);
+
+  /* --- Accents décoratifs (bordures latérales) --- */
+  --agro-accent-yellow:  #f5c842;
+  --agro-accent-brown:   #8b5e3c;
+  --agro-accent-green:   #7aba4c;
+
+  /* --- Ombres --- */
+  --agro-shadow-card:    0 1px 4px rgba(0, 0, 0, 0.08);
+  --agro-shadow-nav:     0 2px 8px rgba(0, 0, 0, 0.12);
+
+  /* --- Border radius --- */
+  --agro-radius-sm:  6px;
+  --agro-radius-md:  8px;
+  --agro-radius-lg:  12px;
+  --agro-radius-xl:  16px;
+  --agro-radius-full: 9999px;
+
+  /* --- Transitions --- */
+  --agro-transition: 0.18s ease;
+}
+
+/* ===== DARK THEME ===== */
+[data-theme="dark"] {
+  /* --- Backgrounds --- */
+  --agro-bg-page:        #0d0d0d;
+  --agro-bg-surface:     #161616;
+  --agro-bg-card:        #1a1a1a;
+  --agro-bg-nav:         #141414;
+  --agro-bg-input:       #1e1e1e;
+
+  /* --- Textes --- */
+  --agro-text-primary:   #f0f0f0;
+  --agro-text-secondary: #c0d0b0;
+  --agro-text-muted:     #556050;
+  --agro-text-on-dark:   #f0f0f0;
+  --agro-text-on-yellow: #2d6a2d;
+
+  /* --- Bordures --- */
+  --agro-border:         rgba(255, 255, 255, 0.08);
+  --agro-border-strong:  rgba(255, 255, 255, 0.15);
+
+  /* --- Couleurs principales (ajustées pour fond noir) --- */
+  --agro-green-light:    #9fd46a;
+  --agro-yellow-soft:    rgba(245, 200, 66, 0.13);
+
+  /* --- États sémantiques --- */
+  --agro-success-bg:     rgba(45, 106, 45, 0.20);
+  --agro-success-text:   #9fd46a;
+  --agro-warning-bg:     rgba(245, 200, 66, 0.13);
+  --agro-warning-text:   #f5c842;
+  --agro-danger-bg:      rgba(153, 27, 27, 0.20);
+  --agro-danger-text:    #f87171;
+  --agro-info-bg:        rgba(26, 95, 165, 0.20);
+  --agro-info-text:      #60a5fa;
+
+  /* --- Slots disponibilité --- */
+  --agro-slot-free-bg:      rgba(45, 106, 45, 0.25);
+  --agro-slot-free-border:  rgba(122, 186, 76, 0.30);
+  --agro-slot-free-text:    #9fd46a;
+  --agro-slot-taken-bg:     #161616;
+  --agro-slot-taken-text:   #3a4035;
+  --agro-slot-selected-bg:  #2d6a2d;
+  --agro-slot-selected-text:#ffffff;
+
+  /* --- Chat --- */
+  --agro-chat-out-bg:    #2d6a2d;
+  --agro-chat-out-text:  #ffffff;
+  --agro-chat-in-bg:     #1a1a1a;
+  --agro-chat-in-text:   #d0e0c0;
+  --agro-chat-in-border: rgba(255, 255, 255, 0.07);
+
+  /* --- Ombres (inutiles sur fond noir) --- */
+  --agro-shadow-card:    none;
+  --agro-shadow-nav:     none;
+}
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  background-color: var(--agro-bg-page);
+  color: var(--agro-text-primary);
+  transition: background-color var(--agro-transition), color var(--agro-transition);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== UTILITAIRES GLOBAUX ===== */
+
+/* Scrollbar discrète */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--agro-border-strong); border-radius: 9999px; }
+
+/* Focus visible accessible */
+:focus-visible {
+  outline: 2px solid var(--agro-green-light);
+  outline-offset: 2px;
+}
+
+/* Liens */
+a { color: var(--agro-green-dark); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===== CLASSES UTILITAIRES ===== */
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: var(--agro-radius-full);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.badge-success { background: var(--agro-success-bg); color: var(--agro-success-text); }
+.badge-warning { background: var(--agro-warning-bg); color: var(--agro-warning-text); }
+.badge-danger  { background: var(--agro-danger-bg);  color: var(--agro-danger-text);  }
+.badge-brown   { background: var(--agro-brown-soft); color: var(--agro-brown); }
+
+/* Accents décoratifs latéraux */
+.accent-strip {
+  border-left: 3px solid var(--agro-accent-yellow);
+  padding-left: 12px;
+}
+.accent-strip.green  { border-left-color: var(--agro-accent-green); }
+.accent-strip.brown  { border-left-color: var(--agro-accent-brown); }
+
+/* Étoiles de notation */
+.stars { display: flex; align-items: center; gap: 3px; }
+.star      { color: var(--agro-yellow); font-size: 14px; }
+.star.empty { color: var(--agro-border-strong); }

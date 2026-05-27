@@ -11,6 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${ka-molema.cors.allowed-origins}")
     private String allowedOrigins;
 
+    @SuppressWarnings("null")
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         if (allowedOrigins != null) {

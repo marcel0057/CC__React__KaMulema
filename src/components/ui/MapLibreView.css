@@ -1,0 +1,69 @@
+.map-view-container {
+    width: 100%;
+    height: 400px;
+    /* Adjust as needed */
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+/* Custom Marker CSS */
+.custom-map-marker {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-map-marker .marker-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid white;
+    z-index: 2;
+}
+
+.custom-map-marker .pulse-ring {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 1;
+    animation: marker-pulse 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+}
+
+.custom-map-marker.available .marker-dot {
+    background-color: #2e7d32;
+}
+
+.custom-map-marker.available .pulse-ring {
+    border: 2px solid rgba(46, 125, 50, 0.6);
+    background-color: rgba(46, 125, 50, 0.2);
+}
+
+.custom-map-marker.busy .marker-dot {
+    background-color: #e65100;
+}
+
+.custom-map-marker.busy .pulse-ring {
+    border: 2px solid rgba(230, 81, 0, 0.6);
+    background-color: rgba(230, 81, 0, 0.2);
+}
+
+
+@keyframes marker-pulse {
+    0% {
+        transform: scale(0.3);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}

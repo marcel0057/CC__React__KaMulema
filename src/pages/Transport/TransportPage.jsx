@@ -2,13 +2,29 @@ import { useEffect, useState } from "react";
 import { deliveries } from "../../data/platformData.js";
 import { apiGet } from "../../services/platformApi.js";
 import { formatFcfa } from "../../utils/formatters.js";
+import MapLibreView from "../../components/ui/MapLibreView";
+import BottomSheet from "../../components/ui/BottomSheet";
 
 export default function TransportPage() {
   const [deliveryList, setDeliveryList] = useState(deliveries);
+  const [selectedTransport, setSelectedTransport] = useState(null);
 
   useEffect(() => {
     apiGet("/api/transports/deliveries", deliveries).then(setDeliveryList);
   }, []);
+
+  const transportMarkers = deliveryList.map((d, index) => ({
+    ...d,
+    id: d.id,
+    name: d.transporter,
+    specialty: d.product,
+    city: `${d.progress}% (de ${d.from} vers ${d.to})`,
+    experience: Math.floor(d.distance / 10),
+    rating: 4.8,
+    availability: d.status === "Livre" ? "Disponible" : "En mission",
+    longitude: 11.5 + (index % 5) * 0.1,
+    latitude: 3.8 + index * 0.05
+  }));
 
   return (
     <section className="module-page">
@@ -19,17 +35,21 @@ export default function TransportPage() {
       </div>
 
       <div className="transport-layout-simple">
-        <article className="surface map-simulation">
-          <div className="map-path">
-            <span className="map-point start">Départ</span>
-            <span className="map-road" />
-            <span className="truck-dot" />
-            <span className="map-road second" />
-            <span className="map-point end">Arrivée</span>
-          </div>
-          <h3>Carte de suivi</h3>
-          <p className="muted">Vue simplifiée du trajet. Une carte réelle pourra être branchée avec Leaflet ou Google Maps.</p>
-        </article>
+        <div style={{ flex: 1, minWidth: '350px' }}>
+          <MapLibreView
+            markers={transportMarkers}
+            onMarkerClick={(m) => setSelectedTransport(m)}
+            selectedMarkerId={selectedTransport?.id}
+            onMapClick={() => setSelectedTransport(null)}
+          />
+        </div>
+
+        <BottomSheet
+          isOpen={Boolean(selectedTransport)}
+          data={selectedTransport}
+          onClose={() => setSelectedTransport(null)}
+          onContact={() => setSelectedTransport(null)}
+        />
 
         <div className="stack-list">
           {deliveryList.map((delivery) => (

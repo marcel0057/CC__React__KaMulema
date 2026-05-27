@@ -1,0 +1,54 @@
+# =========================================================
+# docker-compose.yml — AgroPlatform Module Agronomes
+# Lance : MySQL 8 + Spring Boot Backend
+# Usage : docker-compose up --build
+# =========================================================
+
+services:
+
+  # --- Base de données MySQL ---
+  mysql:
+    image: mysql:8.4
+    container_name: agroplatform-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: agroplatform
+      MYSQL_DATABASE: agroplatform_agronomes
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"   # 3307 côté hôte pour éviter conflit avec XAMPP local
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pagroplatform"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # --- Backend Spring Boot ---
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agroplatform-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy   # attend que MySQL soit prêt
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: agroplatform
+      JWT_SECRET: agroplatform-super-secret-key-marcel-module-agronomes-2025-cameroun-secure-min64chars
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  mysql_data:
+    driver: local
