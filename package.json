@@ -1,0 +1,21 @@
+{
+  "name": "ka-molema-plant-diagnosis",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "server": "powershell -ExecutionPolicy Bypass -File ./start-server.ps1",
+    "server:node": "node server/index.mjs",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "nodemailer": "^7.0.10",
+    "vite": "^7.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {}
+}

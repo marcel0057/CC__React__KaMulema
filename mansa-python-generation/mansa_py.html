@@ -1,0 +1,140 @@
+{% load static %}
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: #4f4f4f;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+  }
+
+  .page {
+    width: min(100%, 980px);
+    margin: 0 auto;
+    padding: 48px 24px 72px;
+  }
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 225px;
+    text-align: center;
+  }
+
+  .rocket {
+    display: block;
+    width: 270px;
+    max-width: 70vw;
+    height: auto;
+    margin-bottom: 22px;
+  }
+
+  #h3_name {
+    margin: 0;
+    color: #4b4b4b;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .wrapper {
+    width: 800px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 72px minmax(170px, 1.25fr) 60px minmax(170px, 1.1fr) minmax(180px, 1.1fr);
+    align-items: center;
+  }
+
+  .head {
+    min-height: 36px;
+    background: #a7a7a7;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .data-row {
+    min-height: 44px;
+  }
+
+  .field {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .field.button {
+    justify-content: center;
+  }
+
+  button {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid #b8b8b8;
+    background: #ffffff;
+    color: #222222;
+    font-size: 20px;
+    line-height: 1;
+    cursor: default;
+  }
+
+  select {
+    width: 150px;
+    max-width: 100%;
+    border: 0;
+    outline: 0;
+    background: #ffffff;
+    color: #111111;
+    font: inherit;
+    font-weight: 700;
+  }
+</style>
+
+<script type="text/javascript">
+  function displayName(button) {
+    const row = button.closest(".data-row");
+    const name = row.querySelector(".name").textContent;
+    document.getElementById("h3_name").textContent = name;
+  }
+</script>
+
+<main class="page">
+  <section class="hero">
+    <img class="rocket" src="{% static 'rocket.svg' %}" alt="">
+    <h3 id="h3_name">( )</h3>
+  </section>
+
+  <div class="wrapper">
+    <div class="head row">
+      <span class="field button"></span>
+      <span class="field">Name</span>
+      <span class="field age">Age</span>
+      <span class="field">Profession</span>
+      <span class="field">Country</span>
+    </div>
+
+    {% for item in data %}
+    <div class="data-row row" id="row{{ forloop.counter }}">
+      <span class="field button">
+        <button onclick="displayName(this)">&#8599;</button>
+      </span>
+      <span class="field name">{{ item.Name }}</span>
+      <span class="field age">{{ item.Age }}</span>
+      <span class="field profession">{{ item.Profession }}</span>
+      <span class="field country">
+        {{ item.CountryHTML|safe }}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+</main>
