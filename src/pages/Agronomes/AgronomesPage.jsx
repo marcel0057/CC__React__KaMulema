@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { agronomes } from "../../data/platformData.js";
+import { agronomes, agronomeRegions } from "../../data/platformData.js";
 import { apiGet } from "../../services/platformApi.js";
 
 const initialContactForm = {
@@ -33,7 +33,7 @@ export default function AgronomesPage() {
       const regionOk = filters.region ? agronome.region === filters.region : true;
       const cityOk = filters.city
         ? agronome.city.toLowerCase().includes(filters.city.toLowerCase()) ||
-          agronome.zones.some((zone) => zone.toLowerCase().includes(filters.city.toLowerCase()))
+        agronome.zones.some((zone) => zone.toLowerCase().includes(filters.city.toLowerCase()))
         : true;
       const experienceOk = agronome.experience >= Number(filters.experience || 0);
       const availabilityOk = filters.availableOnly
@@ -93,10 +93,9 @@ export default function AgronomesPage() {
         <div className="filter-grid">
           <select value={filters.region} onChange={(event) => setFilters((current) => ({ ...current, region: event.target.value }))}>
             <option value="">Toutes les régions</option>
-            <option value="Ouest">Ouest</option>
-            <option value="Centre">Centre</option>
-            <option value="Sud">Sud</option>
-            <option value="Littoral">Littoral</option>
+            {agronomeRegions.map((region) => (
+              <option key={region} value={region}>{region}</option>
+            ))}
           </select>
           <input
             placeholder="Ville ou zone d'intervention"

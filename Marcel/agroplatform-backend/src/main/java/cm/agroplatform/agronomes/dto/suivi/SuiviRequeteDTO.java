@@ -1,11 +1,7 @@
 package cm.agroplatform.agronomes.dto.suivi;
 
-import cm.agroplatform.agronomes.entity.SuiviAgriculteur;
-import cm.agroplatform.agronomes.entity.SuiviAgriculteur.StatutSuivi;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 // =========================================================
 // DTOs — Suivi des agriculteurs
@@ -14,7 +10,11 @@ import java.time.LocalDateTime;
 /**
  * Demande de suivi envoyée par un agriculteur.
  */
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SuiviRequeteDTO {
 
     @NotNull

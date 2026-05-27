@@ -27,12 +27,11 @@ public class DisponibiliteController {
      */
     @PostMapping("/api/agronomes/{agronomeId}/creneaux")
     public ResponseEntity<SlotReponseDTO> creerCreneau(
-        @PathVariable Long agronomeId,
-        @Valid @RequestBody SlotCreationDTO dto
-    ) {
+            @PathVariable Long agronomeId,
+            @Valid @RequestBody SlotCreationDTO dto) {
         dto.setAgronomeId(agronomeId);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(disponibiliteService.creerCreneau(dto));
+                .body(disponibiliteService.creerCreneau(dto));
     }
 
     /**
@@ -52,10 +51,9 @@ public class DisponibiliteController {
      */
     @PostMapping("/api/slots/{slotId}/reserver")
     public ResponseEntity<SlotReponseDTO> reserverCreneau(
-        @PathVariable Long slotId,
-        @RequestParam Long agriculteurId,
-        @RequestParam(required = false) String notes
-    ) {
+            @PathVariable Long slotId,
+            @RequestParam Long agriculteurId,
+            @RequestParam(required = false) String notes) {
         return ResponseEntity.ok(disponibiliteService.reserverCreneau(slotId, agriculteurId, notes));
     }
 
@@ -66,9 +64,8 @@ public class DisponibiliteController {
      */
     @PatchMapping("/api/slots/{slotId}/repondre")
     public ResponseEntity<SlotReponseDTO> repondreReservation(
-        @PathVariable Long slotId,
-        @RequestBody Map<String, String> body
-    ) {
+            @PathVariable Long slotId,
+            @RequestBody Map<String, String> body) {
         StatutSlot statut = StatutSlot.valueOf(body.get("statut"));
         String notes = body.get("notesAgronome");
         return ResponseEntity.ok(disponibiliteService.repondreReservation(slotId, statut, notes));
@@ -80,12 +77,8 @@ public class DisponibiliteController {
      */
     @GetMapping("/api/agriculteurs/{agriculteurId}/reservations")
     public ResponseEntity<List<SlotReponseDTO>> getReservationsAgriculteur(
-        @PathVariable Long agriculteurId,
-        @RequestParam(required = false) Long agronomeId,
-        @RequestParam(required = false) String statut
-    ) {
+            @PathVariable Long agriculteurId) {
         return ResponseEntity.ok(
-            disponibiliteService.getReservationsAgriculteur(agriculteurId, agronomeId, statut)
-        );
+                disponibiliteService.getReservationsAgriculteur(agriculteurId));
     }
 }

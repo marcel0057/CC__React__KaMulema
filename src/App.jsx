@@ -151,7 +151,7 @@ export default function App() {
           <span>Plantain</span>
         </section>
 
-        <ActivePage />
+        <ActivePage user={user} />
       </main>
     </div>
   );

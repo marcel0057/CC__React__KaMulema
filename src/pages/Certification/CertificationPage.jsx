@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { certifications } from "../../data/platformData.js";
+import { certifications, certificationRegions, certificationLevels } from "../../data/platformData.js";
 import { apiGet, apiPost } from "../../services/platformApi.js";
 
 const initialForm = {
@@ -82,15 +82,14 @@ export default function CertificationPage() {
               <input required placeholder="Nom de l'agriculteur" value={form.farmer} onChange={(event) => setForm((current) => ({ ...current, farmer: event.target.value }))} />
               <input required placeholder="Produit principal" value={form.product} onChange={(event) => setForm((current) => ({ ...current, product: event.target.value }))} />
               <select value={form.region} onChange={(event) => setForm((current) => ({ ...current, region: event.target.value }))}>
-                <option>Ouest</option>
-                <option>Centre</option>
-                <option>Sud</option>
-                <option>Littoral</option>
+                {certificationRegions.map((region) => (
+                  <option key={region} value={region}>{region}</option>
+                ))}
               </select>
               <select value={form.level} onChange={(event) => setForm((current) => ({ ...current, level: event.target.value }))}>
-                <option>Certification bronze</option>
-                <option>Certification argent</option>
-                <option>Certification or</option>
+                {certificationLevels.map((level) => (
+                  <option key={level} value={`Certification ${level.toLowerCase()}`}>Certification {level}</option>
+                ))}
               </select>
               <button type="submit" className="primary-action">Envoyer la demande</button>
             </form>

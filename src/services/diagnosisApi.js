@@ -9,7 +9,8 @@ export class DiagnosisApiError extends Error {
 }
 
 export function isDiagnosisApiConfigured() {
-  return Boolean(API_URL);
+  // Retourne true uniquement si la variable est explicitement définie dans .env
+  return Boolean(import.meta.env.VITE_AI_DIAGNOSIS_API_URL);
 }
 
 export async function analyzePlantDisease(payload) {

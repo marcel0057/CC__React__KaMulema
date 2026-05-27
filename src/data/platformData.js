@@ -222,6 +222,27 @@ export const soilRecommendations = [
   },
 ];
 
+// ─── Helpers pour les filtres dynamiques ───────────────────────────────────
+function unique(array) {
+  return [...new Set(array)].filter(Boolean).sort();
+}
+
+/** Toutes les régions présentes dans la liste des agronomes */
+export const agronomeRegions = unique(agronomes.map((a) => a.region));
+
+/** Toutes les régions présentes dans la liste des certifications */
+export const certificationRegions = unique(certifications.map((c) => c.region));
+
+/** Toutes les régions présentes dans le catalogue produits */
+export const productRegions = unique(products.map((p) => p.region));
+
+/** Toutes les catégories présentes dans le catalogue produits */
+export const productCategories = unique(products.map((p) => p.category));
+
+/** Tous les niveaux de certification disponibles */
+export const certificationLevels = unique(certifications.map((c) => c.level));
+
+// ─── Tickets ───────────────────────────────────────────────────────────────
 export const tickets = [
   {
     id: "TK-2401",

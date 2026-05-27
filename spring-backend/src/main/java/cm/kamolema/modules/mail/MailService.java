@@ -35,10 +35,11 @@ public class MailService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
             helper.setFrom("KA MOLEMA <" + mailFrom + ">");
-            helper.setTo(request.agronomeEmail());
-            helper.setReplyTo(request.senderEmail());
+            helper.setTo(java.util.Objects.requireNonNull(request.agronomeEmail(), "Agronome email is required"));
+            helper.setReplyTo(java.util.Objects.requireNonNull(request.senderEmail(), "Sender email is required"));
             helper.setSubject(subject);
-            helper.setText(buildText(request, appointment), buildHtml(request, appointment));
+            helper.setText(java.util.Objects.requireNonNull(buildText(request, appointment)),
+                    java.util.Objects.requireNonNull(buildHtml(request, appointment)));
             mailSender.send(message);
         } catch (Exception exception) {
             throw new IllegalStateException("Impossible d'envoyer le mail pour le moment.", exception);
@@ -59,18 +60,26 @@ public class MailService {
                 """.formatted(
                 value(request.agronomeName()),
                 value(request.message(), "Un utilisateur souhaite echanger avec vous via KA MOLEMA."),
-                appointment ? "Date souhaitee : " + value(request.date(), "A preciser") + "\nMoment : " + value(request.time(), "A preciser") + "\nType : " + value(request.meetingMode(), "A preciser") + "\n" : "",
+                appointment
+                        ? "Date souhaitee : " + value(request.date(), "A preciser") + "\nMoment : "
+                                + value(request.time(), "A preciser") + "\nType : "
+                                + value(request.meetingMode(), "A preciser") + "\n"
+                        : "",
                 value(request.senderName()),
-                value(request.senderEmail())
-        );
+                value(request.senderEmail()));
     }
 
     private String buildHtml(AgronomeContactRequest request, boolean appointment) {
-        String appointmentRows = appointment ? """
-                <tr><td style="padding:10px 0;color:#745f47;font-weight:700;">Date souhaitee</td><td style="padding:10px 0;color:#3e2c1b;text-align:right;">%s</td></tr>
-                <tr><td style="padding:10px 0;color:#745f47;font-weight:700;">Moment</td><td style="padding:10px 0;color:#3e2c1b;text-align:right;">%s</td></tr>
-                <tr><td style="padding:10px 0;color:#745f47;font-weight:700;">Type</td><td style="padding:10px 0;color:#3e2c1b;text-align:right;">%s</td></tr>
-                """.formatted(escape(value(request.date(), "A preciser")), escape(value(request.time(), "A preciser")), escape(value(request.meetingMode(), "A preciser"))) : "";
+        String appointmentRows = appointment
+                ? """
+                        <tr><td style="padding:10px 0;color:#745f47;font-weight:700;">Date souhaitee</td><td style="padding:10px 0;color:#3e2c1b;text-align:right;">%s</td></tr>
+                        <tr><td style="padding:10px 0;color:#745f47;font-weight:700;">Moment</td><td style="padding:10px 0;color:#3e2c1b;text-align:right;">%s</td></tr>
+                        <tr><td style="padding:10px 0;color:#745f47;font-weight:700;">Type</td><td style="padding:10px 0;color:#3e2c1b;text-align:right;">%s</td></tr>
+                        """
+                        .formatted(escape(value(request.date(), "A preciser")),
+                                escape(value(request.time(), "A preciser")),
+                                escape(value(request.meetingMode(), "A preciser")))
+                : "";
 
         return """
                 <!doctype html><html lang="fr"><body style="margin:0;background:#f4efe3;font-family:Arial,Helvetica,sans-serif;color:#3e2c1b;">
@@ -98,16 +107,17 @@ public class MailService {
                 </td></tr>
                 <tr><td style="padding:16px 28px;background:#f7ead4;color:#745f47;font-size:12px;">Message automatique envoyé par KA MOLEMA.</td></tr>
                 </table></div></body></html>
-                """.formatted(
-                appointment ? "Rendez-vous agronomique" : "Contact agronome",
-                appointment ? "Demande de rendez-vous" : "Nouveau message",
-                escape(value(request.agronomeName())),
-                escape(value(request.message(), "Un utilisateur souhaite echanger avec vous via KA MOLEMA.")).replace("\n", "<br>"),
-                appointmentRows,
-                escape(value(request.senderName())),
-                escape(value(request.senderEmail())),
-                escape(value(request.senderEmail()))
-        );
+                """
+                .formatted(
+                        appointment ? "Rendez-vous agronomique" : "Contact agronome",
+                        appointment ? "Demande de rendez-vous" : "Nouveau message",
+                        escape(value(request.agronomeName())),
+                        escape(value(request.message(), "Un utilisateur souhaite echanger avec vous via KA MOLEMA."))
+                                .replace("\n", "<br>"),
+                        appointmentRows,
+                        escape(value(request.senderName())),
+                        escape(value(request.senderEmail())),
+                        escape(value(request.senderEmail())));
     }
 
     private String value(String value) {
@@ -119,6 +129,7 @@ public class MailService {
     }
 
     private String escape(String value) {
-        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&#039;");
+        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;")
+                .replace("'", "&#039;");
     }
 }

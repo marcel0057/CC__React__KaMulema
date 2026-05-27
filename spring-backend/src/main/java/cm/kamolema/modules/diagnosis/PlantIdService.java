@@ -45,7 +45,8 @@ public class PlantIdService {
         try {
             String boundary = "----KaMolemaBoundary" + System.currentTimeMillis();
             byte[] multipartBody = buildMultipartBody(plantPhotos, boundary);
-            URI uri = UriComponentsBuilder.fromUriString(plantIdUrl)
+            URI uri = UriComponentsBuilder
+                    .fromUriString(java.util.Objects.requireNonNull(plantIdUrl, "plantIdUrl is required"))
                     .queryParam("language", "fr")
                     .queryParam("details", DETAILS)
                     .queryParam("full_disease_list", "true")
@@ -78,11 +79,14 @@ public class PlantIdService {
         int count = Math.min(files.length, 5);
         for (int index = 0; index < count; index++) {
             MultipartFile file = files[index];
-            if (file == null || file.isEmpty()) continue;
+            if (file == null || file.isEmpty())
+                continue;
 
             write(output, "--" + boundary + "\r\n");
-            write(output, "Content-Disposition: form-data; name=\"images\"; filename=\"" + safeFilename(file.getOriginalFilename(), index) + "\"\r\n");
-            write(output, "Content-Type: " + Optional.ofNullable(file.getContentType()).orElse("image/jpeg") + "\r\n\r\n");
+            write(output, "Content-Disposition: form-data; name=\"images\"; filename=\""
+                    + safeFilename(file.getOriginalFilename(), index) + "\"\r\n");
+            write(output,
+                    "Content-Type: " + Optional.ofNullable(file.getContentType()).orElse("image/jpeg") + "\r\n\r\n");
             output.write(file.getBytes());
             write(output, "\r\n");
         }
@@ -116,7 +120,8 @@ public class PlantIdService {
         int confidence = (int) Math.round(topSuggestion.path("probability").asDouble(0) * 100);
         boolean isHealthy = data.at("/result/is_healthy/binary").asBoolean(false);
         boolean needsExpertReview = confidence < 60 || isHealthy;
-        String diseaseName = firstNonBlank(details.path("local_name").asText(""), topSuggestion.path("name").asText("Maladie non identifiee"));
+        String diseaseName = firstNonBlank(details.path("local_name").asText(""),
+                topSuggestion.path("name").asText("Maladie non identifiee"));
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("id", firstNonBlank(data.path("access_token").asText(""), UUID.randomUUID().toString()));
@@ -126,13 +131,17 @@ public class PlantIdService {
         result.put("confidence", confidence);
         result.put("severity", estimateSeverity(confidence, data.at("/result/is_healthy/probability").asDouble(0)));
         result.put("nationalStatus", "unknown");
-        result.put("statusMessage", "Plant.id a identifie une maladie probable, mais le statut national doit etre verifie avec la base phytosanitaire locale.");
+        result.put("statusMessage",
+                "Plant.id a identifie une maladie probable, mais le statut national doit etre verifie avec la base phytosanitaire locale.");
         result.put("cropName", fields.getOrDefault("cropName", ""));
-        result.put("causes", splitDetails(firstNonBlank(details.path("cause").asText(""), details.path("description").asText(""))));
+        result.put("causes",
+                splitDetails(firstNonBlank(details.path("cause").asText(""), details.path("description").asText(""))));
         result.put("observedSymptoms", observedSymptoms(fields, details.path("description").asText("")));
-        result.put("likelyProgression", List.of("Propagation possible aux parties voisines.", "Baisse du rendement si aucun traitement n'est applique."));
+        result.put("likelyProgression", List.of("Propagation possible aux parties voisines.",
+                "Baisse du rendement si aucun traitement n'est applique."));
         result.put("urgentActions", urgentActions(needsExpertReview, confidence));
-        result.put("treatmentSteps", splitDetails(firstNonBlank(details.at("/treatment/biological").asText(""), details.at("/treatment/chemical").asText(""))));
+        result.put("treatmentSteps", splitDetails(firstNonBlank(details.at("/treatment/biological").asText(""),
+                details.at("/treatment/chemical").asText(""))));
         result.put("preventionSteps", splitDetails(details.at("/treatment/prevention").asText("")));
         result.put("recommendedProducts", recommendedProducts(details.path("treatment")));
         result.put("needsExpertReview", needsExpertReview);
@@ -154,7 +163,8 @@ public class PlantIdService {
         result.put("causes", List.of());
         result.put("observedSymptoms", observedSymptoms(fields, ""));
         result.put("likelyProgression", List.of());
-        result.put("urgentActions", List.of("Isoler la plante ou la zone touchee.", "Prendre plusieurs photos nettes.", "Contacter un ingenieur agronome."));
+        result.put("urgentActions", List.of("Isoler la plante ou la zone touchee.", "Prendre plusieurs photos nettes.",
+                "Contacter un ingenieur agronome."));
         result.put("treatmentSteps", List.of());
         result.put("preventionSteps", List.of());
         result.put("recommendedProducts", List.of());
@@ -199,21 +209,26 @@ public class PlantIdService {
     private List<Map<String, String>> sources(JsonNode details) {
         List<Map<String, String>> sources = new ArrayList<>();
         if (!details.path("url").asText("").isBlank()) {
-            sources.add(Map.of("title", firstNonBlank(details.path("local_name").asText(""), "Fiche maladie Plant.id"), "url", details.path("url").asText()));
+            sources.add(Map.of("title", firstNonBlank(details.path("local_name").asText(""), "Fiche maladie Plant.id"),
+                    "url", details.path("url").asText()));
         }
         sources.add(Map.of("title", "Plant.id", "url", "https://plant.id/"));
         return sources;
     }
 
     private String estimateSeverity(int confidence, double healthyProbability) {
-        if (healthyProbability >= 0.7) return "Faible";
-        if (confidence >= 80) return "Elevee";
-        if (confidence >= 60) return "Moyenne";
+        if (healthyProbability >= 0.7)
+            return "Faible";
+        if (confidence >= 80)
+            return "Elevee";
+        if (confidence >= 60)
+            return "Moyenne";
         return "A confirmer";
     }
 
     private List<String> splitDetails(String value) {
-        if (value == null || value.isBlank()) return List.of();
+        if (value == null || value.isBlank())
+            return List.of();
         return Arrays.stream(value.split("\\n+|(?<=[.!?])\\s+"))
                 .map(String::trim)
                 .filter(item -> !item.isBlank())

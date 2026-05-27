@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.lang.NonNull;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -11,10 +12,13 @@ public class WebConfig implements WebMvcConfigurer {
     private String allowedOrigins;
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins(allowedOrigins.split(","))
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("*");
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
+        if (allowedOrigins != null) {
+            String[] origins = allowedOrigins.split(",");
+            registry.addMapping("/api/**")
+                    .allowedOrigins(origins)
+                    .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                    .allowedHeaders("*");
+        }
     }
 }

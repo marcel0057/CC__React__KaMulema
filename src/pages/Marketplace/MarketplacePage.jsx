@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { products } from "../../data/platformData.js";
+import { products, productRegions, productCategories } from "../../data/platformData.js";
 import { apiGet, apiPost } from "../../services/platformApi.js";
 import { formatFcfa } from "../../utils/formatters.js";
 
@@ -89,17 +89,15 @@ export default function MarketplacePage() {
           <input placeholder="Produit, vendeur ou ville" value={filters.query} onChange={(event) => setFilters((current) => ({ ...current, query: event.target.value }))} />
           <select value={filters.region} onChange={(event) => setFilters((current) => ({ ...current, region: event.target.value }))}>
             <option value="">Toutes les régions</option>
-            <option value="Ouest">Ouest</option>
-            <option value="Centre">Centre</option>
-            <option value="Sud">Sud</option>
-            <option value="Littoral">Littoral</option>
+            {productRegions.map((region) => (
+              <option key={region} value={region}>{region}</option>
+            ))}
           </select>
           <select value={filters.category} onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value }))}>
             <option value="">Toutes les catégories</option>
-            <option value="Legumes">Légumes</option>
-            <option value="Fruits">Fruits</option>
-            <option value="Tubercules">Tubercules</option>
-            <option value="Exportation">Exportation</option>
+            {productCategories.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
           </select>
           <select value={filters.certified} onChange={(event) => setFilters((current) => ({ ...current, certified: event.target.value }))}>
             <option value="">Tous les statuts</option>

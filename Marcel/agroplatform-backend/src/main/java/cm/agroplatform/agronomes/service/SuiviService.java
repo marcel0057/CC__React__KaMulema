@@ -34,8 +34,9 @@ public class SuiviService {
 
     /**
      * @Async — ne bloque pas le thread HTTP.
-     * Appelé toutes les 30s par le frontend ; la réponse 204 est
-     * renvoyée immédiatement pendant que la mise à jour se fait en arrière-plan.
+     *        Appelé toutes les 30s par le frontend ; la réponse 204 est
+     *        renvoyée immédiatement pendant que la mise à jour se fait en
+     *        arrière-plan.
      */
     @Async("agroTaskExecutor")
     @Transactional
@@ -46,7 +47,7 @@ public class SuiviService {
             agronome.setPositionUpdatedAt(LocalDateTime.now());
             agronomeRepository.save(agronome);
             log.debug("📍 [async] Position agronome {} → {}, {}",
-                agronomeId, dto.getLatitude(), dto.getLongitude());
+                    agronomeId, dto.getLatitude(), dto.getLongitude());
         });
     }
 
@@ -58,30 +59,28 @@ public class SuiviService {
     @Transactional
     public SuiviReponseDTO demanderSuivi(SuiviRequeteDTO dto) {
         Agronome agronome = agronomeRepository.findById(dto.getAgronomeId())
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Agronome introuvable."
-            ));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Agronome introuvable."));
 
         suiviRepository.findByAgronomeIdAndAgriculteurId(dto.getAgronomeId(), dto.getAgriculteurId())
-            .ifPresent(s -> {
-                throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "Une demande existe déjà (statut : " + s.getStatut() + ")."
-                );
-            });
+                .ifPresent(s -> {
+                    throw new ResponseStatusException(
+                            HttpStatus.CONFLICT,
+                            "Une demande existe déjà (statut : " + s.getStatut() + ").");
+                });
 
         SuiviAgriculteur suivi = SuiviAgriculteur.builder()
-            .agronome(agronome)
-            .agriculteurId(dto.getAgriculteurId())
-            .agriculteurNom(dto.getAgriculteurNom())
-            .cultures(dto.getCultures())
-            .localisation(dto.getLocalisation())
-            .statut(StatutSuivi.EN_ATTENTE)
-            .build();
+                .agronome(agronome)
+                .agriculteurId(dto.getAgriculteurId())
+                .agriculteurNom(dto.getAgriculteurNom())
+                .cultures(dto.getCultures())
+                .localisation(dto.getLocalisation())
+                .statut(StatutSuivi.EN_ATTENTE)
+                .build();
 
         suiviRepository.save(suivi);
         log.info("📩 Demande de suivi — agriculteur {} → agronome {}",
-            dto.getAgriculteurId(), dto.getAgronomeId());
+                dto.getAgriculteurId(), dto.getAgronomeId());
 
         // Notification asynchrone à l'agronome
         notifierAgronomeNouvelledemande(agronome.getId(), suivi.getAgriculteurNom());
@@ -90,14 +89,15 @@ public class SuiviService {
     }
 
     /**
-     * @Async — notifie l'agronome d'une nouvelle demande sans bloquer la réponse HTTP.
-     * Prêt à brancher sur un système email/push quand le module Auth de Joumessi sera prêt.
+     * @Async — notifie l'agronome d'une nouvelle demande sans bloquer la réponse
+     *        HTTP.
+     *        Prêt à brancher sur un système email/push quand le module Auth de
+     *        Joumessi sera prêt.
      */
     @Async("agroTaskExecutor")
     public void notifierAgronomeNouvelledemande(Long agronomeId, String agriculteurNom) {
         log.info("🔔 [async] Notification — nouvelle demande de suivi de {} pour l'agronome {}",
-            agriculteurNom, agronomeId);
-        // TODO: brancher sur le service de notifications (email/push) de Joumessi
+                agriculteurNom, agronomeId);
     }
 
     /**
@@ -106,14 +106,12 @@ public class SuiviService {
     @Transactional
     public SuiviReponseDTO repondreDemandesuivi(Long suiviId, StatutSuivi nouveauStatut) {
         SuiviAgriculteur suivi = suiviRepository.findById(suiviId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Demande introuvable."
-            ));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Demande introuvable."));
 
         if (suivi.getStatut() != StatutSuivi.EN_ATTENTE) {
             throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Cette demande a déjà été traitée."
-            );
+                    HttpStatus.BAD_REQUEST, "Cette demande a déjà été traitée.");
         }
 
         if (nouveauStatut == StatutSuivi.ACCEPTE) {
@@ -121,9 +119,8 @@ public class SuiviService {
             long actifs = suiviRepository.countSuivisActifs(suivi.getAgronome().getId());
             if (actifs >= max) {
                 throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN,
-                    "Limite atteinte : " + max + " agriculteurs max. Retirez-en un d'abord."
-                );
+                        HttpStatus.FORBIDDEN,
+                        "Limite atteinte : " + max + " agriculteurs max. Retirez-en un d'abord.");
             }
         }
 
@@ -134,7 +131,7 @@ public class SuiviService {
         notifierAgriculteurReponse(suivi.getAgriculteurId(), nouveauStatut);
 
         log.info("✅ Suivi {} — agriculteur {} / agronome {}",
-            nouveauStatut, suivi.getAgriculteurId(), suivi.getAgronome().getId());
+                nouveauStatut, suivi.getAgriculteurId(), suivi.getAgronome().getId());
         return SuiviReponseDTO.from(suivi);
     }
 
@@ -144,8 +141,7 @@ public class SuiviService {
     @Async("agroTaskExecutor")
     public void notifierAgriculteurReponse(Long agriculteurId, StatutSuivi statut) {
         log.info("🔔 [async] Notification — agriculteur {} : demande de suivi {}",
-            agriculteurId, statut);
-        // TODO: brancher sur le service de notifications de Joumessi
+                agriculteurId, statut);
     }
 
     /**
@@ -154,16 +150,16 @@ public class SuiviService {
     @Transactional
     public void retirerSuivi(Long suiviId) {
         SuiviAgriculteur suivi = suiviRepository.findById(suiviId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Suivi introuvable."
-            ));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Suivi introuvable."));
         suiviRepository.delete(suivi);
         log.info("🗑️ Suivi retiré — agriculteur {} / agronome {}",
-            suivi.getAgriculteurId(), suivi.getAgronome().getId());
+                suivi.getAgriculteurId(), suivi.getAgronome().getId());
     }
 
     /**
      * L'agronome met à jour le diagnostic d'un agriculteur suivi.
+     * 
      * @Async — écriture non critique, ne bloque pas l'UI.
      */
     @Async("agroTaskExecutor")
@@ -180,9 +176,8 @@ public class SuiviService {
     @Transactional
     public SuiviReponseDTO mettreAJourDiagnostic(Long suiviId, String diagnostic) {
         SuiviAgriculteur suivi = suiviRepository.findById(suiviId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Suivi introuvable."
-            ));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Suivi introuvable."));
         suivi.setDernierDiagnostic(diagnostic);
         return SuiviReponseDTO.from(suiviRepository.save(suivi));
     }
@@ -190,13 +185,13 @@ public class SuiviService {
     @Transactional(readOnly = true)
     public List<SuiviReponseDTO> getSuivisActifs(Long agronomeId) {
         return suiviRepository.findByAgronomeIdAndStatut(agronomeId, StatutSuivi.ACCEPTE)
-            .stream().map(SuiviReponseDTO::from).toList();
+                .stream().map(SuiviReponseDTO::from).toList();
     }
 
     @Transactional(readOnly = true)
     public List<SuiviReponseDTO> getDemandesEnAttente(Long agronomeId) {
         return suiviRepository.findDemandesEnAttente(agronomeId)
-            .stream().map(SuiviReponseDTO::from).toList();
+                .stream().map(SuiviReponseDTO::from).toList();
     }
 
     @Transactional(readOnly = true)
@@ -204,11 +199,10 @@ public class SuiviService {
         int max = appProperties.getSuivi().getMaxAgriculteurs();
         long actifs = suiviRepository.countSuivisActifs(agronomeId);
         return Map.of(
-            "suivisActifs",       getSuivisActifs(agronomeId),
-            "demandesEnAttente",  getDemandesEnAttente(agronomeId),
-            "nombreActifs",       actifs,
-            "nombreMax",          max,
-            "placesDisponibles",  max - actifs
-        );
+                "suivisActifs", getSuivisActifs(agronomeId),
+                "demandesEnAttente", getDemandesEnAttente(agronomeId),
+                "nombreActifs", actifs,
+                "nombreMax", max,
+                "placesDisponibles", max - actifs);
     }
 }

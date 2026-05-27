@@ -8,7 +8,6 @@ import { analyzePlantDisease, DiagnosisApiError, isDiagnosisApiConfigured } from
 import { getAnalysisHistory, saveAnalysisHistory } from "../../utils/historyStorage.js";
 
 const initialForm = {
-  farmerId: "AGR-001",
   cropName: "",
   location: "",
   symptomDescription: "",
@@ -16,7 +15,7 @@ const initialForm = {
   plantAge: "",
 };
 
-export default function DiseaseAnalysisPage() {
+export default function DiseaseAnalysisPage({ user }) {
   const [plantPhotos, setPlantPhotos] = useState([]);
   const [form, setForm] = useState(initialForm);
   const [diagnosis, setDiagnosis] = useState(null);
@@ -44,7 +43,7 @@ export default function DiseaseAnalysisPage() {
 
     setIsAnalyzing(true);
     try {
-      const result = await analyzePlantDisease({ ...form, plantPhotos });
+      const result = await analyzePlantDisease({ ...form, plantPhotos, farmerId: user?.email || user?.name || "inconnu" });
       const savedItem = {
         ...result,
         cropName: result.cropName || form.cropName,
