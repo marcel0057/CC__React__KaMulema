@@ -72,21 +72,6 @@ public class AgronomeContactController {
                 false, Instant.now().toString());
         store.messages().add(msg);
 
-        // Auto-reply simple pour la simulation
-        if ("AGRICULTEUR".equals(expediteur)) {
-            new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            store.messages()
-                                    .add(new Message("MSG-" + Instant.now().toEpochMilli(), agriculteurId, agronomeId,
-                                            "AGRONOME", "Bien reçu ! Je serai disponible très prochainement.", false,
-                                            Instant.now().toString()));
-                        }
-                    },
-                    2500);
-        }
-
         return msg;
     }
 }

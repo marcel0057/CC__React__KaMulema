@@ -6,7 +6,7 @@ function formatHeure(iso) {
     return new Date(iso).toLocaleTimeString('fr-CM', { hour: '2-digit', minute: '2-digit' });
 }
 
-export default function Messagerie({ agronome, agriculteurId }) {
+export default function Messagerie({ agronome, agriculteurId, role = 'AGRICULTEUR' }) {
     const [messages, setMessages] = useState([]);
     const [saisie, setSaisie] = useState('');
     const [chargement, setChargement] = useState(true);
@@ -54,7 +54,7 @@ export default function Messagerie({ agronome, agriculteurId }) {
             id: Date.now(),
             agriculteurId,
             agronomeId: agronome.id,
-            expediteur: 'AGRICULTEUR',
+            expediteur: role,
             contenu,
             lu: false,
             createdAt: new Date().toISOString(),
@@ -65,7 +65,7 @@ export default function Messagerie({ agronome, agriculteurId }) {
             await apiPost('/api/agronomes/messages', {
                 agronomeId: agronome.id,
                 agriculteurId,
-                expediteur: 'AGRICULTEUR',
+                expediteur: role,
                 contenu,
             });
             fetchMessages(); // re-fetch immédiatement 
@@ -119,12 +119,12 @@ export default function Messagerie({ agronome, agriculteurId }) {
 
                 {!chargement && messages.length === 0 && (
                     <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', margin: 'auto' }}>
-                        Commencez la conversation avec {agronome.name.split(' ')[1] || agronome.name}
+                        Commencez la conversation.
                     </div>
                 )}
 
                 {messages.map((msg) => {
-                    const estMoi = msg.expediteur === 'AGRICULTEUR';
+                    const estMoi = msg.expediteur === role;
                     return (
                         <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignItems: estMoi ? 'flex-end' : 'flex-start' }}>
                             <div style={{

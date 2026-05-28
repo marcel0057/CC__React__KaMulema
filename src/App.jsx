@@ -7,8 +7,9 @@ import MarketplacePage from "./pages/Marketplace/MarketplacePage.jsx";
 import SoilAdvisorPage from "./pages/SoilAdvisor/SoilAdvisorPage.jsx";
 import TicketsPage from "./pages/Tickets/TicketsPage.jsx";
 import TransportPage from "./pages/Transport/TransportPage.jsx";
+import SuiviAgriculteursPage from "./pages/Agronomes/SuiviAgriculteursPage.jsx";
 
-const modules = [
+const ALL_MODULES = [
   {
     id: "ia",
     label: "Diagnostic IA",
@@ -72,15 +73,35 @@ const modules = [
     description: "QR code, réception, scan et notation après livraison.",
     component: TicketsPage,
   },
+  {
+    id: "suivi",
+    label: "Suivi",
+    icon: "SU",
+    category: "Agronome",
+    title: "Tableau de Bord Agronome",
+    description: "Gérer vos agriculteurs suivis et traiter les demandes.",
+    component: SuiviAgriculteursPage,
+  },
 ];
 
 export default function App() {
   const [activeModuleId, setActiveModuleId] = useState("ia");
   const [authMode, setAuthMode] = useState("login");
   const [user, setUser] = useState(null);
+
+  // Dynamic modules based on role
+  const availableModules = useMemo(() => {
+    if (!user) return ALL_MODULES;
+    if (user.role === "Ingénieur agronome") {
+      return ALL_MODULES; // Agronome sees everything (including Suivi)
+    }
+    // Others do not see Suivi
+    return ALL_MODULES.filter(m => m.id !== "suivi");
+  }, [user]);
+
   const activeModule = useMemo(
-    () => modules.find((module) => module.id === activeModuleId) || modules[0],
-    [activeModuleId],
+    () => availableModules.find((module) => module.id === activeModuleId) || availableModules[0],
+    [activeModuleId, availableModules],
   );
   const ActivePage = activeModule.component;
 
@@ -102,7 +123,7 @@ export default function App() {
         </div>
 
         <nav className="sidebar-nav" aria-label="Modules KA MOLEMA">
-          {modules.map((module) => (
+          {availableModules.map((module) => (
             <button
               key={module.id}
               type="button"

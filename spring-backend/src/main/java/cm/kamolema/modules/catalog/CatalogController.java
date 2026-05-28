@@ -23,11 +23,6 @@ public class CatalogController {
         this.store = store;
     }
 
-    @GetMapping("/agronomes")
-    public List<?> agronomes() {
-        return store.agronomes();
-    }
-
     @GetMapping("/products")
     public List<Product> products() {
         return store.products();
