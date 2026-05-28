@@ -1,9 +1,7 @@
+/* ─── Container & Backdrop ───────────────────────────────────────────────── */
 .bottom-sheet-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   pointer-events: none;
   z-index: 1000;
   display: flex;
@@ -17,53 +15,79 @@
 
 .bottom-sheet-backdrop {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(2px);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
+
 .bottom-sheet-container.open .bottom-sheet-backdrop {
   opacity: 1;
   pointer-events: auto;
 }
 
+/* ─── Sheet card ─────────────────────────────────────────────────────────── */
 .bottom-sheet-content {
   position: relative;
-  background: var(--bg-surface, #ffffff);
-  border-radius: 16px 16px 0 0;
-  transform: translateY(100%);
-  transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
-  padding: 0 20px 30px;
+  background: var(--surface, #1a1f2e);
+  border-radius: 20px 20px 0 0;
+  transform: translateY(110%);
+  transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5);
+  padding: 0 20px 40px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
 .bottom-sheet-container.open .bottom-sheet-content {
   transform: translateY(0);
 }
 
+/* ─── Handle ──────────────────────────────────────────────────────────────── */
 .bottom-sheet-handle-container {
   width: 100%;
-  padding: 12px 0;
+  padding: 14px 0 8px;
   display: flex;
   justify-content: center;
   cursor: pointer;
 }
 
 .bottom-sheet-handle {
-  width: 40px;
+  width: 44px;
   height: 5px;
-  background-color: var(--line-light, #e0e0e0);
+  background: var(--border, rgba(255, 255, 255, 0.15));
   border-radius: 4px;
 }
 
+/* ─── Body ────────────────────────────────────────────────────────────────── */
 .bottom-sheet-body {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+}
+
+/* ─── Header (avatar + name) ─────────────────────────────────────────────── */
+.sheet-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.sheet-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2e7d32, #1b5e20);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .sheet-title-row {
@@ -74,54 +98,138 @@
 
 .sheet-title-row h3 {
   margin: 0;
+  font-size: 1.05rem;
 }
 
+.sheet-subtitle {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+}
+
+/* ─── Status dot ──────────────────────────────────────────────────────────── */
 .status-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  box-shadow: 0 0 0 0 rgba(0,0,0,0.1);
+  flex-shrink: 0;
   animation: pulse-dot 2s infinite;
 }
-.status-indicator-green {
-  background-color: #2e7d32;
-  box-shadow: 0 0 0 rgba(46, 125, 50, 0.4);
+
+.status-green {
+  background: #4caf50;
+  box-shadow: 0 0 0 rgba(76, 175, 80, 0.4);
 }
-.status-indicator-orange {
-  background-color: #e65100;
-  box-shadow: 0 0 0 rgba(230, 81, 0, 0.4);
+
+.status-orange {
+  background: #ff7043;
+  box-shadow: 0 0 0 rgba(255, 112, 67, 0.4);
 }
 
 @keyframes pulse-dot {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 var(--pulse-color); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(0,0,0,0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+  0% {
+    transform: scale(0.9);
+  }
+
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 5px rgba(76, 175, 80, 0);
+  }
+
+  100% {
+    transform: scale(0.9);
+  }
 }
 
+/* ─── Stats row ───────────────────────────────────────────────────────────── */
 .sheet-stats {
   display: flex;
-  justify-content: space-between;
-  border-top: 1px solid var(--line-light, #eeeeee);
-  border-bottom: 1px solid var(--line-light, #eeeeee);
+  flex-wrap: wrap;
+  gap: 12px;
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   padding: 12px 0;
 }
+
 .sheet-stat-item {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.9rem;
-  color: var(--text-muted, #666);
+  font-size: 0.85rem;
+  color: var(--text-muted, rgba(255, 255, 255, 0.6));
 }
 
-.sheet-actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
+.sheet-stat-item i {
+  font-size: 14px;
 }
-.sheet-actions > button {
-  flex: 1;
+
+/* ─── GPS row ─────────────────────────────────────────────────────────────── */
+.sheet-gps-row {
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted, rgba(255, 255, 255, 0.5));
+  padding: 6px 10px;
+  background: rgba(76, 175, 80, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(76, 175, 80, 0.15);
+}
+
+.sheet-gps-row i {
+  color: #4caf50;
+  font-size: 13px;
+}
+
+.sheet-last-active {
+  margin-left: auto;
+  font-size: 0.78rem;
+  opacity: 0.7;
+}
+
+/* ─── Quick Action Buttons ────────────────────────────────────────────────── */
+.sheet-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sheet-quick-btn {
+  flex: 1;
+  min-width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  background: var(--surface-hover, rgba(255, 255, 255, 0.05));
+  color: var(--text, #fff);
+  font-size: 11px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+  font-family: inherit;
+}
+
+.sheet-quick-btn i {
+  font-size: 18px;
+}
+
+.sheet-quick-btn:hover {
+  background: var(--surface-hover, rgba(255, 255, 255, 0.1));
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.sheet-quick-btn.primary {
+  background: linear-gradient(135deg, #2e7d32, #1b5e20);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+.sheet-quick-btn.primary:hover {
+  background: linear-gradient(135deg, #388e3c, #2e7d32);
+  transform: translateY(-2px);
 }

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { ErrorBoundary } from "./components/ui/ErrorBoundary.jsx";
 import AgronomesPage from "./pages/Agronomes/AgronomesPage.jsx";
 import CertificationPage from "./pages/Certification/CertificationPage.jsx";
 import DiseaseAnalysisPage from "./pages/DiseaseAnalysis/DiseaseAnalysisPage.jsx";
@@ -151,7 +152,9 @@ export default function App() {
           <span>Plantain</span>
         </section>
 
-        <ActivePage user={user} />
+        <ErrorBoundary>
+          <ActivePage user={user} />
+        </ErrorBoundary>
       </main>
     </div>
   );

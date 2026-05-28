@@ -8,6 +8,7 @@ import BottomSheet from "../../components/ui/BottomSheet";
 export default function TransportPage() {
   const [deliveryList, setDeliveryList] = useState(deliveries);
   const [selectedTransport, setSelectedTransport] = useState(null);
+  const [selectedCoords, setSelectedCoords] = useState(null);
 
   useEffect(() => {
     apiGet("/api/transports/deliveries", deliveries).then(setDeliveryList);
@@ -38,17 +39,20 @@ export default function TransportPage() {
         <div style={{ flex: 1, minWidth: '350px' }}>
           <MapLibreView
             markers={transportMarkers}
-            onMarkerClick={(m) => setSelectedTransport(m)}
+            onMarkerClick={(m, coords) => { setSelectedTransport(m); setSelectedCoords(coords); }}
             selectedMarkerId={selectedTransport?.id}
-            onMapClick={() => setSelectedTransport(null)}
+            onMapClick={() => { setSelectedTransport(null); setSelectedCoords(null); }}
+            mode="transport"
           />
         </div>
 
         <BottomSheet
           isOpen={Boolean(selectedTransport)}
           data={selectedTransport}
-          onClose={() => setSelectedTransport(null)}
-          onContact={() => setSelectedTransport(null)}
+          markerCoords={selectedCoords}
+          onClose={() => { setSelectedTransport(null); setSelectedCoords(null); }}
+          onContact={() => { setSelectedTransport(null); setSelectedCoords(null); }}
+          mode="transport"
         />
 
         <div className="stack-list">

@@ -29,6 +29,7 @@ export default function AgronomesPage() {
   const [feedback, setFeedback] = useState(null);
   const [sending, setSending] = useState(false);
   const [mapSelectedAgronome, setMapSelectedAgronome] = useState(null);
+  const [mapSelectedCoords, setMapSelectedCoords] = useState(null);
 
   const geoTracker = useGeolocationTracker();
 
@@ -136,19 +137,27 @@ export default function AgronomesPage() {
       <MapLibreView
         markers={filteredAgronomes}
         userPosition={geoTracker.position}
-        onMarkerClick={(agronome) => setMapSelectedAgronome(agronome)}
+        onMarkerClick={(agronome, coords) => {
+          setMapSelectedAgronome(agronome);
+          setMapSelectedCoords(coords);
+        }}
         selectedMarkerId={mapSelectedAgronome?.id}
-        onMapClick={() => setMapSelectedAgronome(null)}
+        onMapClick={() => { setMapSelectedAgronome(null); setMapSelectedCoords(null); }}
+        mode="agronomes"
       />
 
       <BottomSheet
         isOpen={Boolean(mapSelectedAgronome)}
         data={mapSelectedAgronome}
-        onClose={() => setMapSelectedAgronome(null)}
+        markerCoords={mapSelectedCoords}
+        userPosition={geoTracker.position}
+        onClose={() => { setMapSelectedAgronome(null); setMapSelectedCoords(null); }}
         onContact={(agronome, mode) => {
           setMapSelectedAgronome(null);
+          setMapSelectedCoords(null);
           openContact(agronome, mode);
         }}
+        mode="agronomes"
       />
 
       <div className="cards-grid">
