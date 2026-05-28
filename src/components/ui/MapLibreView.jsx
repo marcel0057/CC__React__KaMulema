@@ -64,8 +64,10 @@ export default function MapLibreView({ markers, userPosition, onMarkerClick, sel
             // Marker coords format expectation: lng, lat
             // Some properties might just have "zones" or city. We need to mock coordinates if they don't exist
             // Since it's a test for Ka Molema, let's mock coords based on id near default center if empty
-            const lng = markerData.longitude || 11.5 + (markerData.id % 10) * 0.1;
-            const lat = markerData.latitude || 3.8 + (markerData.id % 5) * 0.1;
+            const rawId = String(markerData.id).replace(/\D/g, "") || "0";
+            const numId = parseInt(rawId, 10);
+            const lng = markerData.longitude || 11.5 + (numId % 10) * 0.1;
+            const lat = markerData.latitude || 3.8 + (numId % 5) * 0.1;
 
             if (!markerRefs.current[markerData.id]) {
                 // Create custom DOM element
@@ -109,8 +111,10 @@ export default function MapLibreView({ markers, userPosition, onMarkerClick, sel
         if (selectedMarkerId) {
             const selectedMarker = markers.find(m => m.id === selectedMarkerId);
             if (selectedMarker) {
-                const lng = selectedMarker.longitude || 11.5 + (selectedMarker.id % 10) * 0.1;
-                const lat = selectedMarker.latitude || 3.8 + (selectedMarker.id % 5) * 0.1;
+                const rawId = String(selectedMarker.id).replace(/\D/g, "") || "0";
+                const numId = parseInt(rawId, 10);
+                const lng = selectedMarker.longitude || 11.5 + (numId % 10) * 0.1;
+                const lat = selectedMarker.latitude || 3.8 + (numId % 5) * 0.1;
 
                 mapRef.current.easeTo({
                     center: [lng, lat],

@@ -4,6 +4,8 @@ import { apiGet } from "../../services/platformApi.js";
 import MapLibreView from "../../components/ui/MapLibreView";
 import BottomSheet from "../../components/ui/BottomSheet";
 import { useGeolocationTracker } from "../../hooks/useGeolocationTracker";
+import CalendrierDisponibilites from "../../components/agronomes/CalendrierDisponibilites";
+import Messagerie from "../../components/agronomes/Messagerie";
 
 const initialContactForm = {
   senderName: "Utilisateur KA MOLEMA",
@@ -192,68 +194,31 @@ export default function AgronomesPage() {
 
       {contact && (
         <div className="modal-backdrop" role="presentation" onClick={() => setContact(null)}>
-          <article className="modal-card" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
-            <h3>{contact.mode === "appointment" ? "Planifier un rendez-vous" : "Contacter directement"}</h3>
-            <p className="muted">{contact.name} accompagne les agriculteurs via {contact.modes.join(", ")}.</p>
-
-            <div className="contact-lines">
-              <a href={`mailto:${contact.email}`}>{contact.email}</a>
-              <a href={`tel:${contact.phone}`}>{contact.phone}</a>
-            </div>
-
-            {feedback && <p className={`alert alert-${feedback.type}`}>{feedback.text}</p>}
-
-            <div className="filter-grid">
-              <label>
-                Votre nom
-                <input value={contactForm.senderName} onChange={(event) => updateContactForm("senderName", event.target.value)} />
-              </label>
-              <label>
-                Votre email
-                <input type="email" value={contactForm.senderEmail} onChange={(event) => updateContactForm("senderEmail", event.target.value)} />
-              </label>
-            </div>
-
-            {contact.mode === "appointment" && (
-              <div className="filter-grid">
-                <label>
-                  Date souhaitée
-                  <input type="date" value={contactForm.date} onChange={(event) => updateContactForm("date", event.target.value)} />
-                </label>
-                <label>
-                  Moment
-                  <select value={contactForm.time} onChange={(event) => updateContactForm("time", event.target.value)}>
-                    <option>Matin</option>
-                    <option>Après-midi</option>
-                    <option>Soir</option>
-                  </select>
-                </label>
-                <label>
-                  Type
-                  <select value={contactForm.meetingMode} onChange={(event) => updateContactForm("meetingMode", event.target.value)}>
-                    <option>Terrain</option>
-                    <option>Appel</option>
-                    <option>WhatsApp</option>
-                    <option>Visio</option>
-                  </select>
-                </label>
-              </div>
-            )}
-
-            <textarea
-              rows="4"
-              placeholder={contact.mode === "appointment" ? "Expliquez l'objectif du rendez-vous..." : "Décrivez votre besoin ou vos symptômes..."}
-              value={contactForm.message}
-              onChange={(event) => updateContactForm("message", event.target.value)}
-            />
-
-            <div className="card-actions">
-              <button type="button" className="secondary-action" onClick={() => setContact(null)}>Annuler</button>
-              <a className="secondary-action link-button" href={buildMailto(contact, contactForm)}>Ouvrir email</a>
-              <button type="button" className="primary-action" disabled={sending} onClick={sendAgronomeEmail}>
-                {sending ? "Envoi..." : "Envoyer le mail"}
+          <article className="modal-card" style={{ maxWidth: '500px' }} role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0 }}>
+                {contact.mode === "appointment" ? "Planifier un rendez-vous" : "Messagerie en direct"}
+              </h3>
+              <button
+                onClick={() => setContact(null)}
+                style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1 }}
+              >
+                &times;
               </button>
             </div>
+
+            {contact.mode === "appointment" ? (
+              <CalendrierDisponibilites
+                agronomeId={contact.id}
+                agronomeNom={contact.name}
+                onReservationConfirmee={(slot) => console.log('Reservation:', slot)}
+              />
+            ) : (
+              <Messagerie
+                agronome={contact}
+                agriculteurId="User"
+              />
+            )}
           </article>
         </div>
       )}
